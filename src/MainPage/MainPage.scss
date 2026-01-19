@@ -1,0 +1,15 @@
+.main-page-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    .main-page-header {
+        margin: 10px 0 10px 0;
+        font-weight: bold;
+    }
+
+    .play-music {
+        align-self: center;
+        max-width: 50px;
+    }
+}
