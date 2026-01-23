@@ -8,6 +8,30 @@
         font-weight: bold;
     }
 
+    .main-page-content {
+
+        .tv-container {
+            display: flex;
+            justify-content: center;
+
+            .tv-picture {
+                z-index: 100;
+                align-self: center;
+            }
+
+            .tv-content {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 90px;
+                background: black;
+                height: 500px;
+                width: 645px;
+            }
+        }
+    }
+
     .play-music {
         align-self: center;
         max-width: 50px;

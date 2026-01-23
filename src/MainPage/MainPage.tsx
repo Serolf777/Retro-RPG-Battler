@@ -2,6 +2,7 @@ import { FC } from 'react';
 import './MainPage.scss';
 import { Crtv } from '../shared/resources/Images/index.ts';
 import battleTheme from "../shared/resources/Songs/battleTheme.mp3";
+import BattleScreen from '../BattleScreen/BattleScreen.tsx';
 
 const MainPage: FC = () => {
     const audio = new Audio(battleTheme);
@@ -15,10 +16,16 @@ const MainPage: FC = () => {
                 Retro RPG Battler
             </div>
             <div className="main-page-content">
-                <img
-                    src={Crtv}
-                    height="800px"
-                />
+                <div className="tv-container">
+                    <img
+                        src={Crtv}
+                        height="800px"
+                        className="tv-picture"
+                    />
+                    <div className="tv-content">
+                        <BattleScreen />
+                    </div>
+                </div>
             </div>
 
             <button onClick={toggleMusic} className="play-music">
