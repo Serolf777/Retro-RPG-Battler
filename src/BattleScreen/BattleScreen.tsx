@@ -35,30 +35,45 @@ const BattleScreen: FC = () => {
 
     const battleOptions = ["FIGHT", "RUN", "DEFEND", "FLEE"];
 
-
     return (
         <div className="battle-screen-container">
             <div className="battle-screen-top">
                 <div className="player-data-container">
-                    <div className="player-data-header">
-                        {dataKeys.map(data => {
+                    <table>
+                        <thead className="player-data-header">
+                            <tr>
+                                {dataKeys.map(data => {
+                                    return (
+                                            <th key={data}>
+                                                {data}
+                                            </th>
+                                        )
+                                    })
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {playerData.map(player => {
                                 return (
-                                    <div className="header">
-                                        {data}
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-
-                    {playerData.map(player => {
-                            return (
-                                <div className="player-stat">
-                                    {player.NAME} {player.LVL} {player.HP} {player.MP}
-                                </div>
-                            )
-                        })
-                    }
+                                        <tr key={`player-${player.NAME}`}>
+                                            <td className="player-stat">
+                                                {player.NAME}
+                                            </td>
+                                            <td className="player-stat">
+                                                {player.LVL}
+                                            </td>
+                                            <td className="player-stat">
+                                                {player.HP}
+                                            </td>
+                                            <td className="player-stat">
+                                                {player.MP}
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
                 </div>
                 <div className="enemies-pictures">
                    <img
@@ -74,7 +89,7 @@ const BattleScreen: FC = () => {
                         HERO
                     </div>
                     {battleOptions.map(option => {
-                            return (<div className="option">{option}</div>)
+                            return (<div className="option" key={option}>{option}</div>)
                         })
                     }
                 </div>

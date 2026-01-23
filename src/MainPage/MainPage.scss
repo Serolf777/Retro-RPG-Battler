@@ -3,12 +3,8 @@
     flex-direction: column;
     height: 100vh;
 
-    .main-page-header {
-        margin: 10px 0 10px 0;
-        font-weight: bold;
-    }
-
     .main-page-content {
+        margin: 12px;
 
         .tv-container {
             display: flex;
@@ -17,6 +13,19 @@
             .tv-picture {
                 z-index: 100;
                 align-self: center;
+            }
+
+            .tv-img-container {
+                position: relative;
+
+                .play-music {
+                    position: absolute;
+                    left: 90px;
+                    bottom: 80px;
+                    width: 50px;
+                    height: 50px;
+                    background: gray;
+                }
             }
 
             .tv-content {
@@ -32,8 +41,8 @@
         }
     }
 
-    .play-music {
+    .toggle-theme {
         align-self: center;
-        max-width: 50px;
+        max-width: 100px;
     }
 }
