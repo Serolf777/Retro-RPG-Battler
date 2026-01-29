@@ -1,15 +1,11 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
-
-interface PlayerData {
-    NAME: string;
-    LVL: number;
-    HP: number;
-    MP: number;
-};
+import Submenu from "./Submenu/Submenu.tsx";
+import { PlayerData, BattleOptions, BattleOptionsType } from "../shared/interfaces/interfaces.tsx";
 
 const BattleScreen: FC = () => {
+    const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
     const dataKeys: (keyof PlayerData)[] = ["NAME", "LVL", "HP", "MP"];
 
     const playerData: PlayerData[] = [
@@ -33,7 +29,15 @@ const BattleScreen: FC = () => {
         }
     ];
 
-    const battleOptions = ["FIGHT", "RUN", "DEFEND", "FLEE"];
+    function handleOptionClick(option: BattleOptionsType) {
+        setOptionSelected(option);
+    };
+
+    const testInventory = [
+        "Medicinal Herb",
+        "Prayer Ring",
+        "Yggdrasil Leaf"
+    ];
 
     return (
         <div className="battle-screen-container">
@@ -88,9 +92,19 @@ const BattleScreen: FC = () => {
                     <div className="current-player">
                         HERO
                     </div>
-                    {battleOptions.map(option => {
-                            return (<div className="option" key={option}>{option}</div>)
-                        })
+                    {optionSelected ? 
+                        <Submenu option={optionSelected} inventory={testInventory} backOption={() => setOptionSelected(null)} />
+                        :
+                        <>
+                            {BattleOptions.map(option => {
+                                    return (
+                                        <div className="option" key={option} onClick={() => handleOptionClick(option)}>
+                                            {option}
+                                        </div>
+                                    )
+                                })
+                            }
+                        </>
                     }
                 </div>
                 <div className="enemies">

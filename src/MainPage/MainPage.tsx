@@ -25,8 +25,6 @@ const MainPage: FC = () => {
         }
     }
 
-    console.log(songOption)
-
     return (
         <div className="main-page-container">
             <div className="main-page-content">

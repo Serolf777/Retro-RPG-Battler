@@ -1,0 +1,15 @@
+.submenu-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    
+    .back-option {
+        display: flex;
+        justify-content: start;
+        margin: 10px 0 10px 12px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
