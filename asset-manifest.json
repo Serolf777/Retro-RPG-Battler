@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/Retro-RPG-Battler/static/css/main.33cef670.css",
-    "main.js": "/Retro-RPG-Battler/static/js/main.ebf8cfcf.js",
+    "main.css": "/Retro-RPG-Battler/static/css/main.22c22d3c.css",
+    "main.js": "/Retro-RPG-Battler/static/js/main.a8507797.js",
     "static/js/453.a5ba65ef.chunk.js": "/Retro-RPG-Battler/static/js/453.a5ba65ef.chunk.js",
     "static/media/gruelingBattle.mp3": "/Retro-RPG-Battler/static/media/gruelingBattle.a459cfd6640292b3ec86.mp3",
     "static/media/battleTheme.mp3": "/Retro-RPG-Battler/static/media/battleTheme.120a6143c288a487343d.mp3",
     "static/media/Crtv.png": "/Retro-RPG-Battler/static/media/Crtv.481ac1828f9ebfaf4a5e.png",
     "static/media/DQ2battle.png": "/Retro-RPG-Battler/static/media/DQ2battle.d5a962c6d9b8902768fb.png",
     "index.html": "/Retro-RPG-Battler/index.html",
-    "main.33cef670.css.map": "/Retro-RPG-Battler/static/css/main.33cef670.css.map",
-    "main.ebf8cfcf.js.map": "/Retro-RPG-Battler/static/js/main.ebf8cfcf.js.map",
+    "main.22c22d3c.css.map": "/Retro-RPG-Battler/static/css/main.22c22d3c.css.map",
+    "main.a8507797.js.map": "/Retro-RPG-Battler/static/js/main.a8507797.js.map",
     "453.a5ba65ef.chunk.js.map": "/Retro-RPG-Battler/static/js/453.a5ba65ef.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.33cef670.css",
-    "static/js/main.ebf8cfcf.js"
+    "static/css/main.22c22d3c.css",
+    "static/js/main.a8507797.js"
   ]
 }
