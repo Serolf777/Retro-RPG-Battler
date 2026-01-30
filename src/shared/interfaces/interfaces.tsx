@@ -7,6 +7,13 @@ export interface PlayerData {
 
 export type BattleOptionsType = "FIGHT" | "RUN" | "DEFEND" | "ITEM";
 
+export interface EnemyStats {
+    NAME: string;
+    LVL: number;
+    HP: number;
+    MP: number;
+}
+
 export const BattleOptions: BattleOptionsType[] = [
     "FIGHT", "RUN", "DEFEND", "ITEM"
 ]

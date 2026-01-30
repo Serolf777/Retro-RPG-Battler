@@ -59,8 +59,7 @@
             }
             
             .option {
-                justify-content: start;
-                display: flex;
+                align-self: flex-start;
                 margin: 8px 0 8px 12px;
 
                 &:hover {

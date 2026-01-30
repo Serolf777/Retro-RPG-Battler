@@ -2,14 +2,57 @@
     margin-top: 20px;
     display: flex;
     flex-direction: column;
-    
-    .back-option {
+    height: 100%;
+
+    .attack-option-container, .run-option-container, .defend-option-container, .item-option-container, .back-option-container {
+        text-transform: uppercase;
         display: flex;
+        justify-content: center;
+    }
+
+    .attack-option-container {
+        flex: 1;
+
+        .attack-option {
+            align-self: center;
+
+            &:hover {
+                cursor: pointer;
+            }  
+        }
+    }
+
+    .run-option-container {
+        align-items: center;
+        flex: 1;
+    }
+
+    .defend-option-container {
+        align-items: center;
+        flex: 1;
+    }
+
+    .item-option-container {
+        flex-direction: column;
+        flex: 1;
+
+        .item-option {
+            align-self: center;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+    
+    .back-option-container {
         justify-content: start;
         margin: 10px 0 10px 12px;
 
-        &:hover {
-            cursor: pointer;
+        .back-option {
+            &:hover {
+                cursor: pointer;
+            }
         }
     }
 }

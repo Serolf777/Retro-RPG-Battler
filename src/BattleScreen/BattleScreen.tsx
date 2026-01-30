@@ -2,10 +2,19 @@ import { FC, useState } from "react";
 import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
 import Submenu from "./Submenu/Submenu.tsx";
-import { PlayerData, BattleOptions, BattleOptionsType } from "../shared/interfaces/interfaces.tsx";
+import { PlayerData, BattleOptions, BattleOptionsType, EnemyStats } from "../shared/interfaces/interfaces.tsx";
 
 const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
+    const [enemyData, setEnemyData] = useState<EnemyStats[]>([
+        {
+            NAME: "Malroth",
+            LVL: 70,
+            HP: 5000,
+            MP: 1000
+        }
+    ]);
+
     const dataKeys: (keyof PlayerData)[] = ["NAME", "LVL", "HP", "MP"];
 
     const playerData: PlayerData[] = [
@@ -93,7 +102,12 @@ const BattleScreen: FC = () => {
                         HERO
                     </div>
                     {optionSelected ? 
-                        <Submenu option={optionSelected} inventory={testInventory} backOption={() => setOptionSelected(null)} />
+                        <Submenu 
+                            enemyData={enemyData} 
+                            option={optionSelected} 
+                            inventory={testInventory} 
+                            backOption={() => setOptionSelected(null)} 
+                        />
                         :
                         <>
                             {BattleOptions.map(option => {
