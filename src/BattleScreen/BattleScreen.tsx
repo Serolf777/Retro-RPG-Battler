@@ -6,12 +6,22 @@ import { PlayerData, BattleOptions, BattleOptionsType, EnemyStats } from "../sha
 
 const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
+
+    const defaultStats = {
+        Atk: 50,
+        Def: 50,
+        Mag: 50,
+        Spd: 50,
+        Evasion: 5
+    }
+
     const [enemyData, setEnemyData] = useState<EnemyStats[]>([
         {
             NAME: "Malroth",
             LVL: 70,
             HP: 5000,
-            MP: 1000
+            MP: 1000,
+            STATS: defaultStats
         }
     ]);
 
@@ -22,19 +32,22 @@ const BattleScreen: FC = () => {
             NAME: "Hero",
             LVL: 31,
             HP: 119,
-            MP: 0
+            MP: 0,
+            STATS: defaultStats
         },
         {
             NAME: "Lloyd",
             LVL: 29,
             HP: 149,
-            MP: 43
+            MP: 43,
+            STATS: defaultStats
         },
         {
             NAME: "Margo",
             LVL: 23,
             HP: 108,
-            MP: 43
+            MP: 43,
+            STATS: defaultStats
         }
     ];
 
@@ -47,6 +60,8 @@ const BattleScreen: FC = () => {
         "Prayer Ring",
         "Yggdrasil Leaf"
     ];
+
+    let activePartyMember = playerData[0];
 
     return (
         <div className="battle-screen-container">
@@ -102,8 +117,10 @@ const BattleScreen: FC = () => {
                         HERO
                     </div>
                     {optionSelected ? 
-                        <Submenu 
-                            enemyData={enemyData} 
+                        <Submenu
+                            playerData={activePartyMember}
+                            enemyData={enemyData}
+                            updateEnemyData={setEnemyData}
                             option={optionSelected} 
                             inventory={testInventory} 
                             backOption={() => setOptionSelected(null)} 

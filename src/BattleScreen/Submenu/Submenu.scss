@@ -20,6 +20,18 @@
                 cursor: pointer;
             }  
         }
+
+        .attack-option, .attack-option-text {
+            align-self: center;
+        }
+
+        .attack-option:hover {
+            cursor: pointer;
+        }
+
+        .attack-option-text {
+            margin: 0 12px 0 12px;
+        }
     }
 
     .run-option-container {

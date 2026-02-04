@@ -1,34 +1,48 @@
 import { FC, useState, useEffect } from "react";
-import { BattleOptionsType, EnemyStats } from "../../shared/interfaces/interfaces";
+import { BattleOptionsType, EnemyStats, PlayerData } from "../../shared/interfaces/interfaces";
+import { attackScript } from "../../scripts/battleScripts.tsx";
 import './Submenu.scss';
 
 export interface SubmenuProps {
+    playerData: PlayerData;
     enemyData: EnemyStats[];
+    updateEnemyData: (updatedEnemyData: EnemyStats[]) => void;
     option: BattleOptionsType;
     inventory: string[];
     backOption: () => void;
 }
 
-const Submenu: FC<SubmenuProps> = ({ option, inventory, backOption }) => {
+const Submenu: FC<SubmenuProps> = ({ playerData, enemyData, updateEnemyData, option, inventory, backOption }) => {
     const [battleText, setBattleText] = useState<string>("");
 
     useEffect(() => {
         if (option === 'RUN') {
-            setBattleText('You fled successfully!');
+            setBattleText('Party fled successfully!');
             setTimeout(() => backOption(), 2000);
         } else if (option === 'DEFEND') {
-            setBattleText('You brace yourself for the next attack.');
+            setBattleText(`${playerData.NAME} braced themselves for the next attack.`);
             setTimeout(() => backOption(), 2000);
         }
     }, [option]);
+
+    function handleAttack() {
+        attackScript(playerData,enemyData, updateEnemyData, setBattleText);
+        setTimeout(() => backOption(), 2000);
+    }
 
     return (
         <div className="submenu-container">
             {option === 'FIGHT' && 
                 <div className="attack-option-container" >
-                    <div className="attack-option" onClick={() => console.log('ATTACK')}>
-                        ATTACK
-                    </div>
+                    {battleText === "" ?
+                        <div className="attack-option" onClick={handleAttack}>
+                            ATTACK
+                        </div>
+                    :
+                        <div className="attack-option-text">
+                            {battleText}
+                        </div>
+                    }
                 </div>
             }
 
@@ -60,7 +74,7 @@ const Submenu: FC<SubmenuProps> = ({ option, inventory, backOption }) => {
              </div>
             }
 
-            {(option !== 'RUN' && option !== 'DEFEND') && 
+            {(option !== 'RUN' && option !== 'DEFEND' && battleText === "") && 
                 <div className="back-option-container" >
                     <div className="back-option" onClick={backOption}>
                         BACK
