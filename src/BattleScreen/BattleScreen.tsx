@@ -33,21 +33,24 @@ const BattleScreen: FC = () => {
             LVL: 31,
             HP: 119,
             MP: 0,
-            STATS: defaultStats
+            STATS: defaultStats,
+            SPELLS: []
         },
         {
             NAME: "Lloyd",
             LVL: 29,
             HP: 149,
             MP: 43,
-            STATS: defaultStats
+            STATS: defaultStats,
+            SPELLS: ["Frizzle", "Kafrizzle", "Kafrizz", "Kacrack", "Healmore", "Kaboom"]
         },
         {
             NAME: "Margo",
             LVL: 23,
             HP: 108,
             MP: 43,
-            STATS: defaultStats
+            STATS: defaultStats,
+            SPELLS: ["Heal", "Multiheal", "Fullheal", "Kazing"]
         }
     ];
 
@@ -58,10 +61,13 @@ const BattleScreen: FC = () => {
     const testInventory = [
         "Medicinal Herb",
         "Prayer Ring",
+        "Yggdrasil Leaf",
+        "Medicinal Herb",
+        "Medicinal Herb",
         "Yggdrasil Leaf"
     ];
 
-    let activePartyMember = playerData[0];
+    let activePartyMember = playerData[1];
 
     return (
         <div className="battle-screen-container">

@@ -14,14 +14,15 @@ export interface SubmenuProps {
 
 const Submenu: FC<SubmenuProps> = ({ playerData, enemyData, updateEnemyData, option, inventory, backOption }) => {
     const [battleText, setBattleText] = useState<string>("");
+    const [magicSelected, setMagicSelected] = useState<boolean>(false);
 
     useEffect(() => {
         if (option === 'RUN') {
             setBattleText('Party fled successfully!');
-            setTimeout(() => backOption(), 2000);
+            setTimeout(() => handleBack(), 2000);
         } else if (option === 'DEFEND') {
             setBattleText(`${playerData.NAME} braced themselves for the next attack.`);
-            setTimeout(() => backOption(), 2000);
+            setTimeout(() => handleBack(), 2000);
         }
     }, [option]);
 
@@ -30,13 +31,41 @@ const Submenu: FC<SubmenuProps> = ({ playerData, enemyData, updateEnemyData, opt
         setTimeout(() => backOption(), 2000);
     }
 
+    function handleBack() {
+        if (magicSelected) {
+            setMagicSelected(false);
+        }
+        backOption();
+    }
+
     return (
         <div className="submenu-container">
             {option === 'FIGHT' && 
                 <div className="attack-option-container" >
                     {battleText === "" ?
-                        <div className="attack-option" onClick={handleAttack}>
-                            ATTACK
+                        <div className="attack-options">
+                            {!magicSelected ? 
+                            <>
+                                <div className="attack-option" onClick={handleAttack}>
+                                    ATTACK
+                                </div>
+                                {playerData.SPELLS.length > 0 &&
+                                    <div className="magic-option" onClick={() => setMagicSelected(true)}>
+                                        MAGIC
+                                    </div>
+                                }
+                            </>
+                            :
+                            <>
+                                {playerData.SPELLS.map((spell, index) => {
+                                    return (
+                                        <div key={`${spell}-${index}`} className="magic-option" onClick={() => console.log(spell)}>
+                                            {spell}
+                                        </div>
+                                    )
+                                })}
+                            </>
+                            }
                         </div>
                     :
                         <div className="attack-option-text">
@@ -64,19 +93,21 @@ const Submenu: FC<SubmenuProps> = ({ playerData, enemyData, updateEnemyData, opt
 
             {option === 'ITEM' && 
              <div className="item-option-container">
-                {inventory.map((item, index) => {
-                    return (
-                        <div key={`${item}-${index}`} className="item-option" onClick={() => console.log(item)}>
-                            {item}
-                        </div>
-                    )
-                })}
+                <div className="item-options">
+                    {inventory.map((item, index) => {
+                        return (
+                            <div key={`${item}-${index}`} className="item-option" onClick={() => console.log(item)}>
+                                {item}
+                            </div>
+                        )
+                    })}
+                </div>
              </div>
             }
 
             {(option !== 'RUN' && option !== 'DEFEND' && battleText === "") && 
                 <div className="back-option-container" >
-                    <div className="back-option" onClick={backOption}>
+                    <div className="back-option" onClick={handleBack}>
                         BACK
                     </div>
                 </div>

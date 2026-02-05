@@ -12,6 +12,7 @@ export interface PlayerData {
     HP: number;
     MP: number;
     STATS: Stats;
+    SPELLS: string[];
 };
 
 export type BattleOptionsType = "FIGHT" | "RUN" | "DEFEND" | "ITEM";

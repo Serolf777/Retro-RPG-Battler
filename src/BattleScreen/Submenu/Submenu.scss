@@ -4,21 +4,34 @@
     flex-direction: column;
     height: 100%;
 
-    .attack-option-container, .run-option-container, .defend-option-container, .item-option-container, .back-option-container {
+    .run-option-container, .defend-option-container, .back-option-container {
+        margin: 0 8px 0 8px;
         text-transform: uppercase;
         display: flex;
         justify-content: center;
     }
 
     .attack-option-container {
-        flex: 1;
+        text-transform: uppercase;
 
-        .attack-option {
-            align-self: center;
+        .attack-options {
+            margin: 6px 8px 0 8px;
+            width: 100%;
+            max-height: 100px;
+            overflow: scroll;
 
-            &:hover {
-                cursor: pointer;
-            }  
+            & > * {
+                margin: 12px 0 12px 0;
+            }
+
+            .attack-option, .magic-option {
+                display: flex;
+                width: fit-content;
+                
+                    &:hover {
+                        cursor: pointer;
+                } 
+            }
         }
 
         .attack-option, .attack-option-text {
@@ -45,21 +58,29 @@
     }
 
     .item-option-container {
-        flex-direction: column;
-        flex: 1;
+        text-transform: uppercase;
 
-        .item-option {
-            align-self: center;
+        .item-options {
+            margin: 6px 8px 0 8px;
+            width: 100%;
+            max-height: 100px;
+            overflow: scroll;
 
-            &:hover {
-                cursor: pointer;
+            .item-option {
+                display: flex;
+                width: fit-content;
+                margin: 4px;
+
+                &:hover {
+                    cursor: pointer;
+                }
             }
         }
     }
     
     .back-option-container {
         justify-content: start;
-        margin: 10px 0 10px 12px;
+        margin-bottom: 12px;
 
         .back-option {
             &:hover {
