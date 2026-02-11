@@ -3,17 +3,11 @@ import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
 import Submenu from "./Submenu/Submenu.tsx";
 import { PlayerData, BattleOptions, BattleOptionsType, EnemyStats } from "../shared/interfaces/interfaces.tsx";
+import { defaultStats, playerData } from "./resources/resources.tsx";
 
 const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
-
-    const defaultStats = {
-        Atk: 50,
-        Def: 50,
-        Mag: 50,
-        Spd: 50,
-        Evasion: 5
-    }
+    const [activePlayer, setActivePlayer] = useState<PlayerData>(playerData[0]);
 
     const [enemyData, setEnemyData] = useState<EnemyStats[]>([
         {
@@ -26,33 +20,6 @@ const BattleScreen: FC = () => {
     ]);
 
     const dataKeys: (keyof PlayerData)[] = ["NAME", "LVL", "HP", "MP"];
-
-    const playerData: PlayerData[] = [
-        {
-            NAME: "Hero",
-            LVL: 31,
-            HP: 119,
-            MP: 0,
-            STATS: defaultStats,
-            SPELLS: []
-        },
-        {
-            NAME: "Lloyd",
-            LVL: 29,
-            HP: 149,
-            MP: 43,
-            STATS: defaultStats,
-            SPELLS: ["Frizzle", "Kafrizzle", "Kafrizz", "Kacrack", "Healmore", "Kaboom"]
-        },
-        {
-            NAME: "Margo",
-            LVL: 23,
-            HP: 108,
-            MP: 43,
-            STATS: defaultStats,
-            SPELLS: ["Heal", "Multiheal", "Fullheal", "Kazing"]
-        }
-    ];
 
     function handleOptionClick(option: BattleOptionsType) {
         setOptionSelected(option);
@@ -120,11 +87,13 @@ const BattleScreen: FC = () => {
             <div className="battle-screen-bottom">
                 <div className="battle-options">
                     <div className="current-player">
-                        HERO
+                        {activePlayer.NAME}
                     </div>
                     {optionSelected ? 
                         <Submenu
-                            playerData={activePartyMember}
+                            playerData={activePlayer}
+                            party={playerData}
+                            setPlayerTurn={setActivePlayer}
                             enemyData={enemyData}
                             updateEnemyData={setEnemyData}
                             option={optionSelected} 

@@ -5,6 +5,8 @@ import './Submenu.scss';
 
 export interface SubmenuProps {
     playerData: PlayerData;
+    party: PlayerData[];
+    setPlayerTurn: (playerName: PlayerData) => void;
     enemyData: EnemyStats[];
     updateEnemyData: (updatedEnemyData: EnemyStats[]) => void;
     option: BattleOptionsType;
@@ -12,7 +14,7 @@ export interface SubmenuProps {
     backOption: () => void;
 }
 
-const Submenu: FC<SubmenuProps> = ({ playerData, enemyData, updateEnemyData, option, inventory, backOption }) => {
+const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, enemyData, updateEnemyData, option, inventory, backOption }) => {
     const [battleText, setBattleText] = useState<string>("");
     const [magicSelected, setMagicSelected] = useState<boolean>(false);
 
@@ -26,9 +28,26 @@ const Submenu: FC<SubmenuProps> = ({ playerData, enemyData, updateEnemyData, opt
         }
     }, [option]);
 
+    function handleNextTurn() {
+        const currentIndex = party.findIndex(player => player.NAME === playerData.NAME);
+        const nextPartyMember = currentIndex + 1;
+
+        backOption();
+
+        if (nextPartyMember < party.length) {
+            setPlayerTurn(party[nextPartyMember]);
+        } else {
+            setPlayerTurn(party[0]);
+        }
+    }
+
     function handleAttack() {
-        attackScript(playerData,enemyData, updateEnemyData, setBattleText);
-        setTimeout(() => backOption(), 2000);
+        attackScript(playerData, enemyData, updateEnemyData, setBattleText);
+        setTimeout(() => handleNextTurn(), 2000);
+    }
+
+    function handleMagic(spell: string) {
+        console.log(spell);
     }
 
     function handleBack() {
