@@ -1,5 +1,5 @@
-import { FC, useState, useEffect } from "react";
-import { BattleOptionsType, EnemyStats, PlayerData } from "../../shared/interfaces/interfaces";
+import { FC, useState, useEffect, Dispatch, SetStateAction } from "react";
+import { BattleOptionsType, EnemyStats, PlayerAction, PlayerData } from "../../shared/interfaces/interfaces";
 import { attackScript } from "../../scripts/battleScripts.tsx";
 import './Submenu.scss';
 
@@ -7,15 +7,18 @@ export interface SubmenuProps {
     playerData: PlayerData;
     party: PlayerData[];
     setPlayerTurn: (playerName: PlayerData) => void;
+    playerActions: PlayerAction[];
+    setPlayerActions: Dispatch<SetStateAction<PlayerAction[]>>;
     enemyData: EnemyStats[];
     updateEnemyData: (updatedEnemyData: EnemyStats[]) => void;
     option: BattleOptionsType;
     inventory: string[];
     backOption: () => void;
+    battleText: string;
+    setBattleText: (battleText: string) => void;
 }
 
-const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, enemyData, updateEnemyData, option, inventory, backOption }) => {
-    const [battleText, setBattleText] = useState<string>("");
+const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, inventory, backOption, battleText, setBattleText }) => {
     const [magicSelected, setMagicSelected] = useState<boolean>(false);
 
     useEffect(() => {
@@ -28,7 +31,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, enemyData
         }
     }, [option]);
 
-    function handleNextTurn() {
+    function handleNextTurn(actions: PlayerAction[]) {
         const currentIndex = party.findIndex(player => player.NAME === playerData.NAME);
         const nextPartyMember = currentIndex + 1;
 
@@ -37,23 +40,43 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, enemyData
         if (nextPartyMember < party.length) {
             setPlayerTurn(party[nextPartyMember]);
         } else {
-            setPlayerTurn(party[0]);
+            handleAllTurnsCompleted(actions);
         }
     }
 
     function handleAttack() {
-        attackScript(playerData, enemyData, updateEnemyData, setBattleText);
-        setTimeout(() => handleNextTurn(), 2000);
+        const updatedActions = [...playerActions, 
+            {
+                player: playerData,
+                action: option,
+                actionData: {
+                    target: enemyData[0].NAME,
+                    normalAttack: true
+                }
+            }
+        ];
+
+        setPlayerActions(updatedActions);
+        handleNextTurn(updatedActions);
     }
 
     function handleMagic(spell: string) {
         console.log(spell);
     }
 
+    function handleAllTurnsCompleted(actions: PlayerAction[]) {
+        setBattleText("All party members have taken their turn!");
+        
+        setPlayerTurn(party[0]);
+        setPlayerActions([]);
+        setTimeout(() => handleBack(), 2000);
+    }
+
     function handleBack() {
         if (magicSelected) {
             setMagicSelected(false);
         }
+        setBattleText("");
         backOption();
     }
 
@@ -61,7 +84,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, enemyData
         <div className="submenu-container">
             {option === 'FIGHT' && 
                 <div className="attack-option-container" >
-                    {battleText === "" ?
+                    {!battleText ?
                         <div className="attack-options">
                             {!magicSelected ? 
                             <>
@@ -124,7 +147,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, enemyData
              </div>
             }
 
-            {(option !== 'RUN' && option !== 'DEFEND' && battleText === "") && 
+            {(option !== 'RUN' && option !== 'DEFEND' && !battleText) && 
                 <div className="back-option-container" >
                     <div className="back-option" onClick={handleBack}>
                         BACK

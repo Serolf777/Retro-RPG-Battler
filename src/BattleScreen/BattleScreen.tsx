@@ -2,12 +2,14 @@ import { FC, useState } from "react";
 import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
 import Submenu from "./Submenu/Submenu.tsx";
-import { PlayerData, BattleOptions, BattleOptionsType, EnemyStats } from "../shared/interfaces/interfaces.tsx";
+import { PlayerData, BattleOptions, BattleOptionsType, EnemyStats, PlayerAction } from "../shared/interfaces/interfaces.tsx";
 import { defaultStats, playerData } from "./resources/resources.tsx";
 
 const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
     const [activePlayer, setActivePlayer] = useState<PlayerData>(playerData[0]);
+    const [playerActions, setPlayerActions] = useState<PlayerAction[]>([]);
+    const [battleText, setBattleText] = useState<string>("");
 
     const [enemyData, setEnemyData] = useState<EnemyStats[]>([
         {
@@ -94,11 +96,15 @@ const BattleScreen: FC = () => {
                             playerData={activePlayer}
                             party={playerData}
                             setPlayerTurn={setActivePlayer}
+                            playerActions={playerActions}
+                            setPlayerActions={setPlayerActions}
                             enemyData={enemyData}
                             updateEnemyData={setEnemyData}
                             option={optionSelected} 
                             inventory={testInventory} 
-                            backOption={() => setOptionSelected(null)} 
+                            backOption={() => setOptionSelected(null)}
+                            battleText={battleText}
+                            setBattleText={setBattleText}
                         />
                         :
                         <>

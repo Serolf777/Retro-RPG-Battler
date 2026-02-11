@@ -17,6 +17,19 @@ export interface PlayerData {
 
 export type BattleOptionsType = "FIGHT" | "RUN" | "DEFEND" | "ITEM";
 
+export interface ActionData {
+    target: string;
+    normalAttack: boolean;
+    itemUsed?: string;
+    spellUsed?: string;
+}
+
+export interface PlayerAction {
+    player: PlayerData;
+    action: BattleOptionsType;
+    actionData: ActionData;
+}
+
 export interface EnemyStats {
     NAME: string;
     LVL: number;
