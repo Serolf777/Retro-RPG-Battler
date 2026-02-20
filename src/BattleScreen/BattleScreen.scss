@@ -49,6 +49,10 @@
             justify-content: center;
             position: relative;
 
+            .battle-text {
+                text-transform: uppercase;
+            }
+
             .current-player {
                 position: absolute;
                 top: -12px;

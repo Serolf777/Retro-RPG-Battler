@@ -22,6 +22,8 @@ export interface ActionData {
     normalAttack: boolean;
     itemUsed?: string;
     spellUsed?: string;
+    flee?: boolean;
+    defend?: boolean;
 }
 
 export interface PlayerAction {

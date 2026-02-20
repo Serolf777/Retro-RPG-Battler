@@ -4,7 +4,7 @@
     flex-direction: column;
     height: 100%;
 
-    .run-option-container, .defend-option-container, .back-option-container {
+    .back-option-container {
         margin: 0 8px 0 8px;
         text-transform: uppercase;
         display: flex;
@@ -34,27 +34,13 @@
             }
         }
 
-        .attack-option, .attack-option-text {
+        .attack-option {
             align-self: center;
         }
 
         .attack-option:hover {
             cursor: pointer;
         }
-
-        .attack-option-text {
-            margin: 0 12px 0 12px;
-        }
-    }
-
-    .run-option-container {
-        align-items: center;
-        flex: 1;
-    }
-
-    .defend-option-container {
-        align-items: center;
-        flex: 1;
     }
 
     .item-option-container {

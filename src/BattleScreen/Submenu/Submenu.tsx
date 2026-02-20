@@ -1,6 +1,5 @@
 import { FC, useState, useEffect, Dispatch, SetStateAction } from "react";
 import { BattleOptionsType, EnemyStats, PlayerAction, PlayerData } from "../../shared/interfaces/interfaces";
-import { attackScript } from "../../scripts/battleScripts.tsx";
 import './Submenu.scss';
 
 export interface SubmenuProps {
@@ -14,19 +13,39 @@ export interface SubmenuProps {
     option: BattleOptionsType;
     inventory: string[];
     backOption: () => void;
-    battleText: string;
-    setBattleText: (battleText: string) => void;
+    setBattleText: (actions: PlayerAction[]) => void;
 }
 
-const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, inventory, backOption, battleText, setBattleText }) => {
+const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, inventory, backOption, setBattleText }) => {
     const [magicSelected, setMagicSelected] = useState<boolean>(false);
+
+    function processAction(action: BattleOptionsType) {
+        let updatedActions: PlayerAction[] = [];
+
+        for (let i = 0; i < party.length; i++) {
+            updatedActions.push(
+                {
+                    player: party[i],
+                    action: option,
+                    actionData: {
+                        target: enemyData[0].NAME,
+                        normalAttack: false,
+                        flee: action === "RUN",
+                        defend: action === "DEFEND"
+                    }
+                }
+            );
+        }
+
+        return updatedActions;
+    }
 
     useEffect(() => {
         if (option === 'RUN') {
-            setBattleText('Party fled successfully!');
+            handleAllTurnsCompleted(processAction("RUN"));
             setTimeout(() => handleBack(), 2000);
         } else if (option === 'DEFEND') {
-            setBattleText(`${playerData.NAME} braced themselves for the next attack.`);
+            handleAllTurnsCompleted(processAction("DEFEND"));
             setTimeout(() => handleBack(), 2000);
         }
     }, [option]);
@@ -65,8 +84,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
     }
 
     function handleAllTurnsCompleted(actions: PlayerAction[]) {
-        setBattleText("All party members have taken their turn!");
-        
+        setBattleText(actions);
         setPlayerTurn(party[0]);
         setPlayerActions([]);
         setTimeout(() => handleBack(), 2000);
@@ -76,7 +94,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
         if (magicSelected) {
             setMagicSelected(false);
         }
-        setBattleText("");
+        setBattleText([]);
         backOption();
     }
 
@@ -84,51 +102,29 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
         <div className="submenu-container">
             {option === 'FIGHT' && 
                 <div className="attack-option-container" >
-                    {!battleText ?
-                        <div className="attack-options">
-                            {!magicSelected ? 
-                            <>
-                                <div className="attack-option" onClick={handleAttack}>
-                                    ATTACK
+                    <div className="attack-options">
+                        {!magicSelected ? 
+                        <>
+                            <div className="attack-option" onClick={handleAttack}>
+                                ATTACK
+                            </div>
+                            {playerData.SPELLS.length > 0 &&
+                                <div className="magic-option" onClick={() => setMagicSelected(true)}>
+                                    MAGIC
                                 </div>
-                                {playerData.SPELLS.length > 0 &&
-                                    <div className="magic-option" onClick={() => setMagicSelected(true)}>
-                                        MAGIC
-                                    </div>
-                                }
-                            </>
-                            :
-                            <>
-                                {playerData.SPELLS.map((spell, index) => {
-                                    return (
-                                        <div key={`${spell}-${index}`} className="magic-option" onClick={() => console.log(spell)}>
-                                            {spell}
-                                        </div>
-                                    )
-                                })}
-                            </>
                             }
-                        </div>
-                    :
-                        <div className="attack-option-text">
-                            {battleText}
-                        </div>
-                    }
-                </div>
-            }
-
-            { option === 'RUN' &&
-                <div className="run-option-container">
-                    <div className="run-option-text">
-                        {battleText}
-                    </div>
-                </div>
-            }
-
-            { option === 'DEFEND' &&
-                <div className="defend-option-container">
-                    <div className="defend-option-text">
-                        {battleText}
+                        </>
+                        :
+                        <>
+                            {playerData.SPELLS.map((spell, index) => {
+                                return (
+                                    <div key={`${spell}-${index}`} className="magic-option" onClick={() => console.log(spell)}>
+                                        {spell}
+                                    </div>
+                                )
+                            })}
+                        </>
+                        }
                     </div>
                 </div>
             }
@@ -147,7 +143,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
              </div>
             }
 
-            {(option !== 'RUN' && option !== 'DEFEND' && !battleText) && 
+            {(option !== 'RUN' && option !== 'DEFEND') && 
                 <div className="back-option-container" >
                     <div className="back-option" onClick={handleBack}>
                         BACK

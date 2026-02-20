@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
 import Submenu from "./Submenu/Submenu.tsx";
@@ -9,7 +9,8 @@ const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
     const [activePlayer, setActivePlayer] = useState<PlayerData>(playerData[0]);
     const [playerActions, setPlayerActions] = useState<PlayerAction[]>([]);
-    const [battleText, setBattleText] = useState<string>("");
+    const [battleText, setBattleText] = useState<PlayerAction[]>([]);
+    const [currentText, setCurrentText] = useState<string>("");
 
     const [enemyData, setEnemyData] = useState<EnemyStats[]>([
         {
@@ -36,7 +37,33 @@ const BattleScreen: FC = () => {
         "Yggdrasil Leaf"
     ];
 
-    let activePartyMember = playerData[1];
+    function delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    useEffect(() => {
+        const processBattleText = async () => {
+            if (battleText.length === playerData.length) {
+                for (let i = 0; i < battleText.length; i++) {
+                    let text = `${battleText[i].player.NAME} `;
+
+                    if (battleText[i].actionData.flee) {
+                        text += 'attempts to flee from battle!';
+                    } else if (battleText[i].actionData.normalAttack) {
+                        text += `attacks ${battleText[i].actionData.target}!`;
+                    } else if (battleText[i].actionData.defend) {
+                        text += `braced themselves for the next attack!`;
+                    }
+                    setCurrentText(text);
+
+                    await delay(2000);
+                }
+                setCurrentText("");
+            }
+        };
+
+        processBattleText();
+    }, [battleText])
 
     return (
         <div className="battle-screen-container">
@@ -91,30 +118,37 @@ const BattleScreen: FC = () => {
                     <div className="current-player">
                         {activePlayer.NAME}
                     </div>
-                    {optionSelected ? 
-                        <Submenu
-                            playerData={activePlayer}
-                            party={playerData}
-                            setPlayerTurn={setActivePlayer}
-                            playerActions={playerActions}
-                            setPlayerActions={setPlayerActions}
-                            enemyData={enemyData}
-                            updateEnemyData={setEnemyData}
-                            option={optionSelected} 
-                            inventory={testInventory} 
-                            backOption={() => setOptionSelected(null)}
-                            battleText={battleText}
-                            setBattleText={setBattleText}
-                        />
+                    {currentText ?
+                        <div className="battle-text">
+                            {currentText}
+                        </div>
                         :
                         <>
-                            {BattleOptions.map(option => {
-                                    return (
-                                        <div className="option" key={option} onClick={() => handleOptionClick(option)}>
-                                            {option}
-                                        </div>
-                                    )
-                                })
+                            {optionSelected ? 
+                                <Submenu
+                                    playerData={activePlayer}
+                                    party={playerData}
+                                    setPlayerTurn={setActivePlayer}
+                                    playerActions={playerActions}
+                                    setPlayerActions={setPlayerActions}
+                                    enemyData={enemyData}
+                                    updateEnemyData={setEnemyData}
+                                    option={optionSelected} 
+                                    inventory={testInventory} 
+                                    backOption={() => setOptionSelected(null)}
+                                    setBattleText={setBattleText}
+                                />
+                                :
+                                <>
+                                    {BattleOptions.map(option => {
+                                            return (
+                                                <div className="option" key={option} onClick={() => handleOptionClick(option)}>
+                                                    {option}
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </>
                             }
                         </>
                     }
