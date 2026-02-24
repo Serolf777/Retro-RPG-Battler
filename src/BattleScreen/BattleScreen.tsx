@@ -3,7 +3,8 @@ import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
 import Submenu from "./Submenu/Submenu.tsx";
 import { PlayerData, BattleOptions, BattleOptionsType, EnemyStats, PlayerAction } from "../shared/interfaces/interfaces.tsx";
-import { defaultStats, playerData } from "./resources/resources.tsx";
+import { enemyStats, playerData } from "./resources/resources.tsx";
+import { attackScript, processEnemyAttack } from "../scripts/battleScripts.tsx";
 
 const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
@@ -18,9 +19,11 @@ const BattleScreen: FC = () => {
             LVL: 70,
             HP: 5000,
             MP: 1000,
-            STATS: defaultStats
+            STATS: enemyStats.Malroth
         }
     ]);
+
+    const [partyData, setPartyData] = useState<PlayerData[]>(playerData);
 
     const dataKeys: (keyof PlayerData)[] = ["NAME", "LVL", "HP", "MP"];
 
@@ -50,6 +53,7 @@ const BattleScreen: FC = () => {
                     if (battleText[i].actionData.flee) {
                         text += 'attempts to flee from battle!';
                     } else if (battleText[i].actionData.normalAttack) {
+                        attackScript(battleText[i].player, enemyData, setEnemyData, true);
                         text += `attacks ${battleText[i].actionData.target}!`;
                     } else if (battleText[i].actionData.defend) {
                         text += `braced themselves for the next attack!`;
@@ -58,6 +62,14 @@ const BattleScreen: FC = () => {
 
                     await delay(2000);
                 }
+
+                for (let i = 0; i < enemyData.length; i++) {
+                    const enemyText = processEnemyAttack(partyData, enemyData[i], setPartyData, true);
+                    setCurrentText(enemyText ?? "");
+
+                    await delay(2000);
+                }
+
                 setCurrentText("");
             }
         };

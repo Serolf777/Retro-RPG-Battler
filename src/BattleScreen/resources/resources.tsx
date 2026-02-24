@@ -1,11 +1,21 @@
 import { PlayerData } from "../../shared/interfaces/interfaces";
 
+export const enemyStats = {
+    Malroth: {
+        Atk: 120,
+        Def: 50,
+        Mag: 100,
+        Spd: 50,
+        Evasion: 5
+    }
+}
+
 export const defaultStats = {
-    Atk: 50,
+    Atk: 100,
     Def: 50,
-    Mag: 50,
-    Spd: 50,
-    Evasion: 5
+    Mag: 80,
+    Spd: 70,
+    Evasion: 15
 }
 
 export const playerData: PlayerData[] = [
