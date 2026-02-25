@@ -12,24 +12,36 @@ export function attackScript(playerData: PlayerData, enemyData: EnemyStats[], up
     updatedEnemyData([...enemyData]);
 
     if (normalAtk) {
-        return `${playerData.NAME} attacked ${enemyData[0].NAME} for ${dmg} damage!`;
+        return `attacked ${enemyData[0].NAME} for ${dmg} damage!`;
     }
 }
 
 export function determineRandomTarget(numberOfTargets: number) {
     return Math.floor(Math.random() * numberOfTargets);
+};
+
+export function determineValidPlayerTargets(players: PlayerData[]) {
+    return players.filter((player) => player.HP > 0);
 }
 
 export function processEnemyAttack(playerData: PlayerData[], enemyData: EnemyStats, updatedPlayerData: (updatedPlayerData: PlayerData[]) => void, normalAtk: boolean) {
-    const randomTarget = determineRandomTarget(playerData.length);
+    const validTargets = determineValidPlayerTargets(playerData);
 
-    let dmg = enemyData.STATS.Atk - playerData[randomTarget].STATS.Def;
+    const randomTarget = determineRandomTarget(validTargets.length);
+    const targetedIndex = playerData.findIndex((player) => player.NAME === validTargets[randomTarget].NAME);
+
+    let dmg = enemyData.STATS.Atk - playerData[targetedIndex].STATS.Def;
 
     if (dmg < 1) {
         dmg = 1;
     }
 
-    playerData[randomTarget].HP -= dmg;
+    playerData[targetedIndex].HP -= dmg;
+
+    if (playerData[targetedIndex].HP < 0) {
+        playerData[targetedIndex].HP = 0;
+    }
+
     updatedPlayerData([...playerData]);
 
     if (normalAtk) {

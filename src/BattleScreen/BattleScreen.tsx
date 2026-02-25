@@ -10,7 +10,7 @@ const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
     const [activePlayer, setActivePlayer] = useState<PlayerData>(playerData[0]);
     const [playerActions, setPlayerActions] = useState<PlayerAction[]>([]);
-    const [battleText, setBattleText] = useState<PlayerAction[]>([]);
+    const [battleData, setBattleData] = useState<PlayerAction[]>([]);
     const [currentText, setCurrentText] = useState<string>("");
 
     const [enemyData, setEnemyData] = useState<EnemyStats[]>([
@@ -46,19 +46,18 @@ const BattleScreen: FC = () => {
 
     useEffect(() => {
         const processBattleText = async () => {
-            if (battleText.length === playerData.length) {
-                for (let i = 0; i < battleText.length; i++) {
-                    let text = `${battleText[i].player.NAME} `;
+            if (battleData.length === playerData.length) {
+                for (let i = 0; i < battleData.length; i++) {
+                    let battleText = `${battleData[i].player.NAME} `;
 
-                    if (battleText[i].actionData.flee) {
-                        text += 'attempts to flee from battle!';
-                    } else if (battleText[i].actionData.normalAttack) {
-                        attackScript(battleText[i].player, enemyData, setEnemyData, true);
-                        text += `attacks ${battleText[i].actionData.target}!`;
-                    } else if (battleText[i].actionData.defend) {
-                        text += `braced themselves for the next attack!`;
+                    if (battleData[i].actionData.flee) {
+                        battleText += 'attempts to flee from battle!';
+                    } else if (battleData[i].actionData.normalAttack) {
+                        battleText += attackScript(battleData[i].player, enemyData, setEnemyData, true) ?? "";
+                    } else if (battleData[i].actionData.defend) {
+                        battleText += `braced themselves for the next attack!`;
                     }
-                    setCurrentText(text);
+                    setCurrentText(battleText);
 
                     await delay(2000);
                 }
@@ -75,7 +74,7 @@ const BattleScreen: FC = () => {
         };
 
         processBattleText();
-    }, [battleText])
+    }, [battleData])
 
     return (
         <div className="battle-screen-container">
@@ -148,7 +147,7 @@ const BattleScreen: FC = () => {
                                     option={optionSelected} 
                                     inventory={testInventory} 
                                     backOption={() => setOptionSelected(null)}
-                                    setBattleText={setBattleText}
+                                    setBattleData={setBattleData}
                                 />
                                 :
                                 <>

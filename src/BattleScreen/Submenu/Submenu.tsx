@@ -13,10 +13,10 @@ export interface SubmenuProps {
     option: BattleOptionsType;
     inventory: string[];
     backOption: () => void;
-    setBattleText: (actions: PlayerAction[]) => void;
+    setBattleData: (actions: PlayerAction[]) => void;
 }
 
-const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, inventory, backOption, setBattleText }) => {
+const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, inventory, backOption, setBattleData }) => {
     const [magicSelected, setMagicSelected] = useState<boolean>(false);
 
     function processAction(action: BattleOptionsType) {
@@ -84,7 +84,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
     }
 
     function handleAllTurnsCompleted(actions: PlayerAction[]) {
-        setBattleText(actions);
+        setBattleData(actions);
         setPlayerTurn(party[0]);
         setPlayerActions([]);
         setTimeout(() => handleBack(), 2000);
@@ -93,8 +93,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
     function handleBack() {
         if (magicSelected) {
             setMagicSelected(false);
-        }
-        setBattleText([]);
+        }setBattleData([]);
         backOption();
     }
 
