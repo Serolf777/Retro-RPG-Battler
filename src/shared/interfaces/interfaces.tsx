@@ -15,7 +15,9 @@ export interface PlayerData {
     SPELLS: string[];
 };
 
-export type BattleOptionsType = "FIGHT" | "RUN" | "DEFEND" | "ITEM";
+export type MainMenuOptionsType = "FIGHT" | "TACTICS" | "RUN";
+
+export type BattleOptionsType = "ATTACK" | "SPELLS" |"DEFEND" | "ITEM";
 
 export interface ActionData {
     target: string;
@@ -40,6 +42,6 @@ export interface EnemyStats {
     STATS: Stats;
 }
 
-export const BattleOptions: BattleOptionsType[] = [
-    "FIGHT", "RUN", "DEFEND", "ITEM"
+export const MainMenuOptions: MainMenuOptionsType[] = [
+    "FIGHT", "TACTICS", "RUN"
 ]

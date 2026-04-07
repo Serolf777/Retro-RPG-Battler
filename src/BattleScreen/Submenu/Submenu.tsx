@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, Dispatch, SetStateAction } from "react";
-import { BattleOptionsType, EnemyStats, PlayerAction, PlayerData } from "../../shared/interfaces/interfaces";
+import { MainMenuOptionsType, EnemyStats, PlayerAction, PlayerData, BattleOptionsType } from "../../shared/interfaces/interfaces";
 import './Submenu.scss';
 
 export interface SubmenuProps {
@@ -10,13 +10,14 @@ export interface SubmenuProps {
     setPlayerActions: Dispatch<SetStateAction<PlayerAction[]>>;
     enemyData: EnemyStats[];
     updateEnemyData: (updatedEnemyData: EnemyStats[]) => void;
-    option: BattleOptionsType;
+    option: MainMenuOptionsType;
+    playerOption?: BattleOptionsType;
     inventory: string[];
     backOption: () => void;
     setBattleData: (actions: PlayerAction[]) => void;
 }
 
-const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, inventory, backOption, setBattleData }) => {
+const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, playerOption, inventory, backOption, setBattleData }) => {
     const [magicSelected, setMagicSelected] = useState<boolean>(false);
 
     function processAction(action: BattleOptionsType) {
@@ -26,11 +27,10 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
             updatedActions.push(
                 {
                     player: party[i],
-                    action: option,
+                    action: playerOption || 'DEFEND',
                     actionData: {
                         target: enemyData[0].NAME,
                         normalAttack: false,
-                        flee: action === "RUN",
                         defend: action === "DEFEND"
                     }
                 }
@@ -41,10 +41,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
     }
 
     useEffect(() => {
-        if (option === 'RUN') {
-            handleAllTurnsCompleted(processAction("RUN"));
-            setTimeout(() => handleBack(), 2000);
-        } else if (option === 'DEFEND') {
+        if (playerOption === 'DEFEND') {
             handleAllTurnsCompleted(processAction("DEFEND"));
             setTimeout(() => handleBack(), 2000);
         }
@@ -53,8 +50,6 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
     function handleNextTurn(actions: PlayerAction[]) {
         const currentIndex = party.findIndex(player => player.NAME === playerData.NAME);
         const nextPartyMember = currentIndex + 1;
-
-        backOption();
 
         if (nextPartyMember < party.length) {
             setPlayerTurn(party[nextPartyMember]);
@@ -67,7 +62,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
         const updatedActions = [...playerActions, 
             {
                 player: playerData,
-                action: option,
+                action: playerOption || 'DEFEND',
                 actionData: {
                     target: enemyData[0].NAME,
                     normalAttack: true
@@ -128,7 +123,13 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
                 </div>
             }
 
-            {option === 'ITEM' && 
+            {option === 'TACTICS' && 
+                <div className="tactics-option-container" >
+                    Filler Text for Tactics
+                </div>
+            }
+
+            {playerOption === 'ITEM' && 
              <div className="item-option-container">
                 <div className="item-options">
                     {inventory.map((item, index) => {
@@ -142,7 +143,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
              </div>
             }
 
-            {(option !== 'RUN' && option !== 'DEFEND') && 
+            {(option !== 'RUN' && playerOption !== 'DEFEND') && 
                 <div className="back-option-container" >
                     <div className="back-option" onClick={handleBack}>
                         BACK

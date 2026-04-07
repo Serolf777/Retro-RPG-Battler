@@ -2,12 +2,12 @@ import { FC, useState, useEffect } from "react";
 import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
 import Submenu from "./Submenu/Submenu.tsx";
-import { PlayerData, BattleOptions, BattleOptionsType, EnemyStats, PlayerAction } from "../shared/interfaces/interfaces.tsx";
+import { PlayerData, MainMenuOptions, MainMenuOptionsType, BattleOptionsType, EnemyStats, PlayerAction } from "../shared/interfaces/interfaces.tsx";
 import { enemyStats, playerData } from "./resources/resources.tsx";
 import { attackScript, processEnemyAttack } from "../scripts/battleScripts.tsx";
 
 const BattleScreen: FC = () => {
-    const [optionSelected, setOptionSelected] = useState<BattleOptionsType | null>(null);
+    const [optionSelected, setOptionSelected] = useState<MainMenuOptionsType | null>(null);
     const [activePlayer, setActivePlayer] = useState<PlayerData>(playerData[0]);
     const [playerActions, setPlayerActions] = useState<PlayerAction[]>([]);
     const [battleData, setBattleData] = useState<PlayerAction[]>([]);
@@ -27,7 +27,7 @@ const BattleScreen: FC = () => {
 
     const dataKeys: (keyof PlayerData)[] = ["NAME", "LVL", "HP", "MP"];
 
-    function handleOptionClick(option: BattleOptionsType) {
+    function handleOptionClick(option: MainMenuOptionsType) {
         setOptionSelected(option);
     };
 
@@ -46,6 +46,14 @@ const BattleScreen: FC = () => {
 
     useEffect(() => {
         const processBattleText = async () => {
+            if (optionSelected === "RUN") {
+                setCurrentText(`The party attempts to flee from battle!`);
+                await delay(2000);
+
+                setCurrentText("");
+                setOptionSelected(null);
+            }
+
             if (battleData.length === playerData.length) {
                 for (let i = 0; i < battleData.length; i++) {
                     let battleText = `${battleData[i].player.NAME} `;
@@ -74,7 +82,7 @@ const BattleScreen: FC = () => {
         };
 
         processBattleText();
-    }, [battleData])
+    }, [battleData, optionSelected])
 
     return (
         <div className="battle-screen-container">
@@ -126,9 +134,11 @@ const BattleScreen: FC = () => {
             </div>
             <div className="battle-screen-bottom">
                 <div className="battle-options">
-                    <div className="current-player">
-                        {activePlayer.NAME}
-                    </div>
+                    {optionSelected === 'FIGHT' &&
+                        <div className="current-player">
+                            {activePlayer.NAME}
+                        </div>
+                    }
                     {currentText ?
                         <div className="battle-text">
                             {currentText}
@@ -144,14 +154,14 @@ const BattleScreen: FC = () => {
                                     setPlayerActions={setPlayerActions}
                                     enemyData={enemyData}
                                     updateEnemyData={setEnemyData}
-                                    option={optionSelected} 
+                                    option={optionSelected}
                                     inventory={testInventory} 
                                     backOption={() => setOptionSelected(null)}
                                     setBattleData={setBattleData}
                                 />
                                 :
                                 <>
-                                    {BattleOptions.map(option => {
+                                    {MainMenuOptions.map(option => {
                                             return (
                                                 <div className="option" key={option} onClick={() => handleOptionClick(option)}>
                                                     {option}
