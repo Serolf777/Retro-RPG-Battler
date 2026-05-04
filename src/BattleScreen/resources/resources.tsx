@@ -2,11 +2,17 @@ import { PlayerData } from "../../shared/interfaces/interfaces";
 
 export const enemyStats = {
     Malroth: {
-        Atk: 120,
+        Atk: 420,
         Def: 50,
         Mag: 100,
         Spd: 50,
-        Evasion: 5
+        Evasion: 5,
+        Resistances: {
+            Fire: 30,
+            Ice: 20,
+            Earth: 0,
+            Wind: -10
+        }
     }
 }
 

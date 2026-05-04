@@ -2,9 +2,9 @@ import { FC, useState, useEffect } from "react";
 import { malroth } from '../shared/resources/Images/index.ts';
 import './BattleScreen.scss';
 import Submenu from "./Submenu/Submenu.tsx";
-import { PlayerData, MainMenuOptions, MainMenuOptionsType, BattleOptionsType, EnemyStats, PlayerAction } from "../shared/interfaces/interfaces.tsx";
+import { PlayerData, MainMenuOptions, MainMenuOptionsType, EnemyStats, PlayerAction } from "../shared/interfaces/interfaces.tsx";
 import { enemyStats, playerData } from "./resources/resources.tsx";
-import { attackScript, processEnemyAttack } from "../scripts/battleScripts.tsx";
+import { attackScript, processEnemyAttack, spellScript } from "../scripts/battleScripts.tsx";
 
 const BattleScreen: FC = () => {
     const [optionSelected, setOptionSelected] = useState<MainMenuOptionsType | null>(null);
@@ -12,6 +12,7 @@ const BattleScreen: FC = () => {
     const [playerActions, setPlayerActions] = useState<PlayerAction[]>([]);
     const [battleData, setBattleData] = useState<PlayerAction[]>([]);
     const [currentText, setCurrentText] = useState<string>("");
+    const [partyData, setPartyData] = useState<PlayerData[]>(playerData);
 
     const [enemyData, setEnemyData] = useState<EnemyStats[]>([
         {
@@ -22,8 +23,6 @@ const BattleScreen: FC = () => {
             STATS: enemyStats.Malroth
         }
     ]);
-
-    const [partyData, setPartyData] = useState<PlayerData[]>(playerData);
 
     const dataKeys: (keyof PlayerData)[] = ["NAME", "LVL", "HP", "MP"];
 
@@ -61,9 +60,13 @@ const BattleScreen: FC = () => {
                     if (battleData[i].actionData.flee) {
                         battleText += 'attempts to flee from battle!';
                     } else if (battleData[i].actionData.normalAttack) {
-                        battleText += attackScript(battleData[i].player, enemyData, setEnemyData, true) ?? "";
+                        battleText += attackScript(battleData[i].player, enemyData, setEnemyData, battleData[i].actionData.normalAttack ?? false) ?? "";
+                    } else if (battleData[i].actionData.spellUsed) {
+                        battleText += spellScript(battleData[i].player, enemyData, setEnemyData, battleData[i].actionData.spellUsed ?? "") ?? "";
                     } else if (battleData[i].actionData.defend) {
                         battleText += `braced themselves for the next attack!`;
+                    } else if (battleData[i].action === "PASS") {
+                        battleText += `is unable to move!`;
                     }
                     setCurrentText(battleText);
 
@@ -77,12 +80,24 @@ const BattleScreen: FC = () => {
                     await delay(2000);
                 }
 
-                setCurrentText("");
+                if (partyData.every(player => player.HP <= 0)) {
+                    setCurrentText("The party has been defeated...");
+                } else if (enemyData.every(enemy => enemy.HP <= 0)) {
+                    setCurrentText("The enemies have been defeated!");
+                } else {
+                  setCurrentText("");  
+                }
             }
         };
 
         processBattleText();
     }, [battleData, optionSelected])
+
+    useEffect(() => {
+        if (partyData.every(player => player.HP <= 0)) {
+            setCurrentText("The party has been defeated...");
+        }
+    }, [partyData]);
 
     return (
         <div className="battle-screen-container">
@@ -126,10 +141,9 @@ const BattleScreen: FC = () => {
                 </div>
                 <div className="enemies-pictures">
                    <img
-                    height="250px"
-                    src={malroth}
+                        height="250px"
+                        src={malroth}
                    />
-                   
                 </div>
             </div>
             <div className="battle-screen-bottom">

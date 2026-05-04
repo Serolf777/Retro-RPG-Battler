@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, Dispatch, SetStateAction } from "react";
-import { MainMenuOptionsType, EnemyStats, PlayerAction, PlayerData, BattleOptionsType } from "../../shared/interfaces/interfaces";
+import { MainMenuOptionsType, EnemyStats, PlayerAction, PlayerData, BattleOption, BattleOptionsType } from "../../shared/interfaces/interfaces.tsx";
 import './Submenu.scss';
 
 export interface SubmenuProps {
@@ -20,18 +20,18 @@ export interface SubmenuProps {
 const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerActions, setPlayerActions, enemyData, updateEnemyData, option, playerOption, inventory, backOption, setBattleData }) => {
     const [magicSelected, setMagicSelected] = useState<boolean>(false);
 
-    function processAction(action: BattleOptionsType) {
+    function processAction(action: string) {
         let updatedActions: PlayerAction[] = [];
 
         for (let i = 0; i < party.length; i++) {
             updatedActions.push(
                 {
                     player: party[i],
-                    action: playerOption || 'DEFEND',
+                    action: playerOption || BattleOption.Defend,
                     actionData: {
                         target: enemyData[0].NAME,
                         normalAttack: false,
-                        defend: action === "DEFEND"
+                        defend: action === BattleOption.Defend,
                     }
                 }
             );
@@ -40,18 +40,33 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
         return updatedActions;
     }
 
+    const currentIndex = party.findIndex(player => player.NAME === playerData.NAME);
+    const nextPartyMember = currentIndex + 1;
+
+    if (party[currentIndex].HP <= 0) {
+        const updatedActions = [...playerActions, 
+            {
+                player: playerData,
+                action: BattleOption.Pass,
+                actionData: {
+                    target: enemyData[0].NAME,
+                    isDead: true
+                }
+            }
+        ];
+        setPlayerActions(updatedActions);
+        handleNextTurn(updatedActions);
+    }
+
     useEffect(() => {
-        if (playerOption === 'DEFEND') {
-            handleAllTurnsCompleted(processAction("DEFEND"));
+        if (playerOption === BattleOption.Defend) {
+            handleAllTurnsCompleted(processAction(BattleOption.Defend));
             setTimeout(() => handleBack(), 2000);
         }
     }, [option]);
 
     function handleNextTurn(actions: PlayerAction[]) {
-        const currentIndex = party.findIndex(player => player.NAME === playerData.NAME);
-        const nextPartyMember = currentIndex + 1;
-
-        if (nextPartyMember < party.length) {
+        if (nextPartyMember < party.length) {    
             setPlayerTurn(party[nextPartyMember]);
         } else {
             handleAllTurnsCompleted(actions);
@@ -62,7 +77,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
         const updatedActions = [...playerActions, 
             {
                 player: playerData,
-                action: playerOption || 'DEFEND',
+                action: playerOption || BattleOption.Defend,
                 actionData: {
                     target: enemyData[0].NAME,
                     normalAttack: true
@@ -75,7 +90,21 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
     }
 
     function handleMagic(spell: string) {
-        console.log(spell);
+        const updatedActions = [ ...playerActions,
+            {
+                player: playerData,
+                action: BattleOption.Spells,
+                actionData: {
+                    target: enemyData[0].NAME,
+                    spellUsed: spell,
+                    normalAttack: false
+                }
+            }
+        ];
+
+        setMagicSelected(false);
+        setPlayerActions(updatedActions);
+        handleNextTurn(updatedActions);
     }
 
     function handleAllTurnsCompleted(actions: PlayerAction[]) {
@@ -88,7 +117,8 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
     function handleBack() {
         if (magicSelected) {
             setMagicSelected(false);
-        }setBattleData([]);
+        }
+        setBattleData([]);
         backOption();
     }
 
@@ -112,7 +142,7 @@ const Submenu: FC<SubmenuProps> = ({ playerData, party, setPlayerTurn, playerAct
                         <>
                             {playerData.SPELLS.map((spell, index) => {
                                 return (
-                                    <div key={`${spell}-${index}`} className="magic-option" onClick={() => console.log(spell)}>
+                                    <div key={`${spell}-${index}`} className="magic-option" onClick={() => handleMagic(spell)}>
                                         {spell}
                                     </div>
                                 )

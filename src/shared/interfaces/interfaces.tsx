@@ -17,20 +17,29 @@ export interface PlayerData {
 
 export type MainMenuOptionsType = "FIGHT" | "TACTICS" | "RUN";
 
-export type BattleOptionsType = "ATTACK" | "SPELLS" |"DEFEND" | "ITEM";
+export type BattleOptionsType = "ATTACK" | "SPELLS" |"DEFEND" | "ITEM" | "PASS";
+
+export const BattleOption = {
+    Attack: "ATTACK",
+    Spells: "SPELLS",
+    Defend: "DEFEND",
+    Item: "ITEM",
+    Pass: "PASS"
+}
 
 export interface ActionData {
     target: string;
-    normalAttack: boolean;
+    normalAttack?: boolean;
     itemUsed?: string;
     spellUsed?: string;
     flee?: boolean;
     defend?: boolean;
+    isDead?: boolean;
 }
 
 export interface PlayerAction {
     player: PlayerData;
-    action: BattleOptionsType;
+    action: string;
     actionData: ActionData;
 }
 

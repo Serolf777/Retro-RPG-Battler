@@ -1,5 +1,10 @@
 import { EnemyStats, PlayerData } from "../shared/interfaces/interfaces.tsx"
+import { SpellDmg } from "./spellData.tsx";
 
+
+export const randomDmgMod = () => {
+    return Math.round(Math.random() * (1.0 - 0.7) + 0.7);
+};
 
 export function attackScript(playerData: PlayerData, enemyData: EnemyStats[], updatedEnemyData: (updatedEnemyData: EnemyStats[]) => void, normalAtk: boolean) {
     let dmg = playerData.STATS.Atk - enemyData[0].STATS.Def;
@@ -15,6 +20,21 @@ export function attackScript(playerData: PlayerData, enemyData: EnemyStats[], up
         return `attacked ${enemyData[0].NAME} for ${dmg} damage!`;
     }
 }
+
+export function spellScript(playerData: PlayerData, enemyData: EnemyStats[], updatedEnemyData: (updatedEnemyData: EnemyStats[]) => void, spellUsed: string) {
+    const spellDmg = SpellDmg(spellUsed, playerData.STATS.Mag) * randomDmgMod();
+
+    let dmg = spellDmg - enemyData[0].STATS.Def;
+
+    if (dmg < 1) {
+        dmg = 1;
+    }
+
+    enemyData[0].HP -= dmg;
+    updatedEnemyData([...enemyData]);
+
+    return `cast ${spellUsed} on ${enemyData[0].NAME} for ${dmg} damage!`;
+};
 
 export function determineRandomTarget(numberOfTargets: number) {
     return Math.floor(Math.random() * numberOfTargets);
